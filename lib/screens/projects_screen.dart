@@ -23,27 +23,27 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-  title: const Text('المشاريع'),
-  actions: [
-    IconButton(
-      icon: const Icon(Icons.add),
-      onPressed: () async {
-        final result = await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const AddProjectScreen(),
-          ),
-        );
+        title: const Text('المشاريع'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AddProjectScreen(),
+                ),
+              );
 
-        if (result == true) {
-          setState(() {
-            projects = ApiService.getProjects();
-          });
-        }
-      },
-    ),
-  ],
-),
+              if (result == true) {
+                setState(() {
+                  projects = ApiService.getProjects();
+                });
+              }
+            },
+          ),
+        ],
+      ),
       body: FutureBuilder<List<dynamic>>(
         future: projects,
         builder: (context, snapshot) {
@@ -71,39 +71,83 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
             );
           }
 
-          final projects = snapshot.data!;
-
+          final projectList = snapshot.data!;
           // عرض المشاريع
           return ListView.builder(
             padding: const EdgeInsets.all(16),
-            itemCount: projects.length,
+            itemCount: projectList.length,
             itemBuilder: (context, index) {
-              final project = projects[index];
+              final project = projectList[index];
 
-            return Card(
-  margin: const EdgeInsets.only(bottom: 12),
-  child: ListTile(
-    leading: const Icon(Icons.folder),
-    title: Text(
-      project['name'] ?? '',
-    ),
-    subtitle: Text(
-      project['description'] ?? 'بدون وصف',
-    ),
-    trailing: const Icon(Icons.arrow_forward_ios),
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => TasksScreen(
-            projectId: project['id'],
-            projectName: project['name'],
-          ),
-        ),
-      );
-    },
-  ),
-);
+              return Card(
+                margin: const EdgeInsets.only(bottom: 12),
+                child: ListTile(
+                  leading: const Icon(Icons.folder),
+                  title: Text(
+                    project['name'] ?? '',
+                  ),
+                  subtitle: Text(
+                    project['description'] ?? 'بدون وصف',
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon:
+                            const Icon(Icons.delete_outline, color: Colors.red),
+                        onPressed: () async {
+                          final confirm = await showDialog<bool>(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: const Text('حذف المشروع'),
+                              content: Text(
+                                  'متأكد بدك تحذف "${project['name']}"؟ رح يتحذف كل مهامه كمان.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, false),
+                                  child: const Text('إلغاء'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, true),
+                                  child: const Text('حذف',
+                                      style: TextStyle(color: Colors.red)),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (confirm == true) {
+                            try {
+                              await ApiService.deleteProject(project['id']);
+                              setState(() {
+                                projects = ApiService.getProjects();
+                              });
+                            } catch (e) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('حدث خطأ: $e')),
+                                );
+                              }
+                            }
+                          }
+                        },
+                      ),
+                      const Icon(Icons.arrow_forward_ios, size: 16),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TasksScreen(
+                          projectId: project['id'],
+                          projectName: project['name'],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
             },
           );
         },
