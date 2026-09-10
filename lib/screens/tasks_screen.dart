@@ -4,7 +4,7 @@ import 'add_task_screen.dart';
 import 'report_screen.dart';
 import 'activity_log_screen.dart';
 import '../services/current_user.dart';
-
+import 'edit_task_screen.dart';
 class TasksScreen extends StatefulWidget {
   final int projectId;
   final String projectName;
@@ -44,7 +44,7 @@ class _TasksScreenState extends State<TasksScreen> {
 
   Future<void> changeStatus(int taskId, String status) async {
     try {
-            await ApiService.updateTaskStatus(
+      await ApiService.updateTaskStatus(
         taskId: taskId,
         status: status,
         changedBy: CurrentUser.id!,
@@ -167,6 +167,24 @@ class _TasksScreenState extends State<TasksScreen> {
                         fontSize: 16,
                       ),
                     ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.edit),
+                    tooltip: 'تعديل',
+                    onPressed: () async {
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditTaskScreen(
+                            task: task,
+                          ),
+                        ),
+                      );
+
+                      if (result == true) {
+                        refreshTasks();
+                      }
+                    },
                   ),
                   IconButton(
                     icon: const Icon(Icons.delete),

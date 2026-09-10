@@ -202,4 +202,36 @@ class ApiService {
       throw Exception(data['error'] ?? 'فشل حذف المشروع');
     }
   }
+  static Future<bool> updateTask({
+  required int taskId,
+  required String title,
+  String? description,
+  required String priority,
+  int? assignedTo,
+  int? parentTaskId,
+}) async {
+  final response = await http.put(
+    Uri.parse('$baseUrl/tasks/$taskId'),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: jsonEncode({
+      'title': title,
+      'description': description,
+      'priority': priority,
+      'assigned_to': assignedTo,
+      'parent_task_id': parentTaskId,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    return true;
+  }
+
+  final data = jsonDecode(response.body);
+
+  throw Exception(
+    data['error'] ?? 'فشل تعديل المهمة',
+  );
+}
 }
