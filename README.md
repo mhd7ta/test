@@ -1,16 +1,53 @@
-# project
+# Task Manager
 
-A new Flutter project.
+نظام لإدارة المشاريع والمهام باستخدام Flutter و Node.js و SQL Server.
 
-## Getting Started
+## فكرة المشروع
 
-This project is a starting point for a Flutter application.
+يهدف المشروع إلى مساعدة فريق العمل على إنشاء المشاريع وإدارة المهام ومتابعة حالة تنفيذها من خلال Kanban Board.
 
-A few resources to get you started if this is your first Flutter project:
+## المميزات
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- إنشاء المشاريع
+- إضافة المهام
+- تحديد أولوية المهمة
+- إنشاء مهام رئيسية ومهام فرعية
+- تعيين المهام لأعضاء الفريق
+- عرض المهام باستخدام Kanban Board
+- تغيير حالة المهمة بين:
+  - New
+  - In Progress
+  - Done
+- نقل المهام باستخدام Drag & Drop
+- تسجيل تغييرات حالة المهام في Activity Log
+- عرض تقرير إنجاز المشروع
+- تعديل المهام
+- حذف المهام
+- حذف المشاريع
+- اختيار المستخدم الحالي لتسجيل من قام بتغيير حالة المهمة
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## التقنيات المستخدمة
+
+- Flutter
+- Dart
+- Node.js
+- Express.js
+- SQL Server
+- Git
+- GitHub
+
+## هيكل المشروع
+
+```text
+project/
+├── backend/
+│   ├── server.js
+│   └── ...
+│
+├── lib/
+│   ├── models/
+│   ├── screens/
+│   └── services/
+│
+├── README.md
+└── pubspec.yaml
