@@ -22,7 +22,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   List<dynamic> users = [];
   int? assignedTo;
-  
+
   List<dynamic> allTasks = [];
   int? parentTaskId;
 
@@ -224,8 +224,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               ),
               items: users.map((user) {
                 return DropdownMenuItem<int>(
-                  value: user['id'],
-                  child: Text(user['name']),
+                  value: user.id,
+                  child: Text(user.name),
                 );
               }).toList(),
               onChanged: (value) {

@@ -3,6 +3,7 @@ import '../services/api_service.dart';
 import 'add_task_screen.dart';
 import 'report_screen.dart';
 import 'activity_log_screen.dart';
+import '../services/current_user.dart';
 
 class TasksScreen extends StatefulWidget {
   final int projectId;
@@ -43,9 +44,10 @@ class _TasksScreenState extends State<TasksScreen> {
 
   Future<void> changeStatus(int taskId, String status) async {
     try {
-      await ApiService.updateTaskStatus(
+            await ApiService.updateTaskStatus(
         taskId: taskId,
         status: status,
+        changedBy: CurrentUser.id!,
       );
 
       refreshTasks();

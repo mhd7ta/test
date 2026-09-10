@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../models/user.dart';
 
 class ApiService {
   static const String baseUrl = 'http://localhost:3000/api';
@@ -100,13 +101,14 @@ class ApiService {
   }
 
 // جلب جميع المستخدمين
-  static Future<List<dynamic>> getUsers() async {
+  static Future<List<AppUser>> getUsers() async {
     final response = await http.get(
       Uri.parse('$baseUrl/users'),
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      final List data = jsonDecode(utf8.decode(response.bodyBytes));
+      return data.map((json) => AppUser.fromJson(json)).toList();
     }
 
     final data = jsonDecode(response.body);
@@ -116,6 +118,7 @@ class ApiService {
   static Future<bool> updateTaskStatus({
     required int taskId,
     required String status,
+    required int changedBy,
   }) async {
     final response = await http.put(
       Uri.parse('$baseUrl/tasks/$taskId/status'),
@@ -124,6 +127,7 @@ class ApiService {
       },
       body: jsonEncode({
         'status': status,
+        'changed_by': changedBy,
       }),
     );
 
@@ -187,5 +191,15 @@ class ApiService {
     throw Exception(
       data['error'] ?? 'فشل حذف المهمة',
     );
+  }
+
+  static Future<void> deleteProject(int projectId) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/projects/$projectId'),
+    );
+    if (response.statusCode != 200) {
+      final data = jsonDecode(response.body);
+      throw Exception(data['error'] ?? 'فشل حذف المشروع');
+    }
   }
 }
